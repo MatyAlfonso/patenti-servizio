@@ -1,30 +1,29 @@
+import DB from "../DataBase.js"
 
-// import sequelize from '../db.js';
+const Person = DB.define('Person', {
+    first_name: {
+        type: DB.Types.TEXT,
+        allowNull: true,
+    },
+    last_name: {
+        type: DB.Types.STRING,
+        allowNull: false,
+    },
+    // status: {
+    //     type: DB.Types.STRING,
+    //     defaultValue: 'active', // status can be 'active', 'archived', 'pinned', 'completed'
+    // },
+    // dt_create: {
+    //     type: DB.Types.DATE,
+    //     defaultValue: DB.Types.NOW,
+    // },
+    // dt_update: {
+    //     type: DB.Types.DATE,
+    //     defaultValue: DB.Types.NOW,
+    // },
+}, {
+    // tableName: 'people',
+    timestamps: false,
+});
 
-// const Person = sequelize.define('Person', {
-//     msg: {
-//         type: DataTypes.TEXT,
-//         allowNull: false,
-//     },
-//     username: {
-//         type: DataTypes.STRING,
-//         allowNull: true,
-//     },
-//     status: {
-//         type: DataTypes.STRING,
-//         defaultValue: 'active', // status can be 'active', 'archived', 'pinned', 'completed'
-//     },
-//     dt_create: {
-//         type: DataTypes.DATE,
-//         defaultValue: DataTypes.NOW,
-//     },
-//     dt_update: {
-//         type: DataTypes.DATE,
-//         defaultValue: DataTypes.NOW,
-//     },
-// }, {
-//     tableName: 'people',
-//     timestamps: false,
-// });
-
-// export default Message;
+export default Person;

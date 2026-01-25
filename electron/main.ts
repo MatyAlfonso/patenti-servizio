@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const __filename = fileURLToPath(import.meta.url)
 console.log(__filename);
 
-import {Channels} from '../srv/Api.Channel.js';
+import Server from '../srv/Server.js';
 
 
 // The built directory structure
@@ -44,7 +44,6 @@ function createWindow() {
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
-	Channels.init();	
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
   })
 
@@ -74,4 +73,7 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then( async () => {
+	await Server.start();
+	createWindow();
+});

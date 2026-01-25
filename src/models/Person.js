@@ -9,7 +9,8 @@ class Person {
 	}
 
 	static async read(filter) {
-		return Api.getPersons(filter);
+		let res = await Api.getPersons(filter);
+		return res.map( r => r.dataValues );
 	}
 }
 

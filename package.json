@@ -22,7 +22,7 @@
   },
   "main": "dist-electron/main.js",
   "dependencies": {
-    "better-sqlite3": "^12.6.2",
+    "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7",
     "vue": "^3.5.27"
   }

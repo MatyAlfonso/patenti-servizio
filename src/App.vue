@@ -10,6 +10,7 @@ const test = async () => {
 	try {
 		error.value = null;
 		let pp = await Person.read({filter: null});
+		console.log( pp );
 		persons.value = pp;
 	}
 	catch( err ) {

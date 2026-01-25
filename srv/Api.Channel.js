@@ -1,17 +1,16 @@
 import { ipcMain } from 'electron';
-import { DataBase } from './DataBase.js';
+import Person from './models/Person.js';
 
 // https://www.youtube.com/watch?v=GQvDNRBe4IU
 
-const db = new DataBase();
-
-
 export const Channels = {
 	init: function() {
-		ipcMain.handle('persons:get', (_, filter) => {
+		ipcMain.handle('persons:get', async (_, filter) => {
 			try {
-				console.log('channels:persons:get',2, db);
-				return db.getPersons(filter);
+				console.log('channels:persons:get');
+				const result = await Person.findAll();
+				console.log(JSON.stringify(result));
+				return result;
 			}
 			catch( err ) {
 				return [{first_name: 'error', last_name: err.toString()}];

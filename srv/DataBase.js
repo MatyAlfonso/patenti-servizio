@@ -1,50 +1,43 @@
 
+import { app } from 'electron';
+import path from 'node:path';
+
+
 // Import the 'createRequire' function from the 'module' package
 import { createRequire } from 'module';
+import Database from 'better-sqlite3';
 const require = createRequire(import.meta.url);
 
 // Import better-sqlite3
 // const Sqlite3 = require('better-sqlite3');
-const Sqlite3 = require('sqlite3').Database;
+// const Sqlite3 = require('sqlite3').Database;
 
-// import { Sequelize } from '@sequelize/core';
-// import { SqliteDialect } from '@sequelize/sqlite3';
+const { Sequelize, Model, DataTypes } = require('sequelize');
 
-// const sqlize = new Sequelize({
-//   dialect: SqliteDialect,
-//   storage: 'sequelize.sqlite',
-// });
+const dbPath = path.join(app.getAppPath() , 'data', 'test.db' );
 
-import { app } from 'electron';
-import path from 'node:path';
+const sqlize = new Sequelize({
+	dialect: 'sqlite',
+	storage: dbPath
+})
 
-let db = null;
+class DataBase {
 
-export class DataBase {
-
-	constructor() {
-	}
-
-	_init() {
-		if( db == null ) {
-			try {
-				// const folder= app.getPath('exe');
-				const folder= app.getAppPath();
-				const dbName = path.join(folder , 'data', 'test.db' );
-				console.log(dbName);
-				db = new Sqlite3(dbName);
-			}
-			catch( err ) {
-				console.error('*******************************');
-				console.error(err.toString());
-				console.error('*******************************');
-			}
+	static define(modelName, attributes, options) {
+		try {
+			return sqlize.define(modelName, attributes, options);
+		}
+		catch( err ) {
+			console.error( err );
+			return null;
 		}
 	}
 
-	getPersons(filter) {
-		this._init();
-		console.log(filter);
-		return [{first_name: 'pinco', last_name: 'pallino'},{last_name: 'test'}];
+	static async sync(args) {
+		return sqlize.sync(args);
 	}
 }
+
+DataBase.Types = DataTypes;
+
+export default DataBase;
