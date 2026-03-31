@@ -108,7 +108,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { apiClient } from "@/services/api";
+import Api from "@/services/Api";
 import Table from "@/components/Table.vue";
 import Modal from "@/components/Modal.vue";
 import Icon from "@/components/Icon.vue";
@@ -190,10 +190,10 @@ const savePerson = async () => {
     };
 
     if (isEditing.value) {
-      await apiClient.patch(`/persone/${payload.id}`, payload);
+      await Api.updatePersona(payload.id, payload);
       showToast("Dati aggiornati!");
     } else {
-      await apiClient.post("/persone", payload);
+      await Api.createPersona(payload);
       showToast("Persona creata!");
     }
     showModal.value = false;
@@ -208,7 +208,7 @@ const savePerson = async () => {
 const loadPeople = async () => {
   try {
     loading.value = true;
-    people.value = await apiClient.get("/persone");
+    people.value = await Api.getPersone();
   } catch (err) {
     error.value = "Nessun personale trovato.";
   } finally {
@@ -229,7 +229,7 @@ const confirmDelete = (person) => {
 const executeDelete = async (id) => {
   try {
     isSaving.value = true;
-    await apiClient.delete(`/persone/${id}`);
+    await Api.deletePersona(id);
     showToast("Persona eliminata!");
     confirmAction.value.show = false;
     await loadPeople();
