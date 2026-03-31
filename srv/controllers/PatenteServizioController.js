@@ -1,59 +1,36 @@
 import { PatenteServizio, PatenteCivile, Persona, CategoriaPatente, StatoPatente, Richiesta, Ente, sequelize } from '../models/index.js';
 
-export const getAll = async (req, res) => {
+export const getAll = async () => {
+    return await PatenteServizio.findAll({
+        include: [
+            { model: Persona, as: 'persona' },
+            { model: PatenteCivile, as: 'patente_civile' },
+            { model: CategoriaPatente, as: 'categoria' },
+            { model: StatoPatente, as: 'stato' }
+        ],
+        order: [['data_rilascio', 'DESC']]
+    });
+};
+
+export const issue = async (idRichiesta) => {
+    const transaction = await sequelize.transaction();
     try {
-        const licenses = await PatenteServizio.findAll({
+        const request = await Richiesta.findByPk(idRichiesta, {
             include: [
                 {
                     model: Persona,
-                    as: 'persona'
-                },
-                {
-                    model: PatenteCivile,
-                    as: 'patente_civile'
-                },
-                {
-                    model: CategoriaPatente,
-                    as: 'categoria'
-                },
-                {
-                    model: StatoPatente,
-                    as: 'stato'
+                    as: 'persona',
+                    include: [{ model: PatenteCivile, as: 'patente_civile' }]
                 }
             ],
-            order: [['data_rilascio', 'DESC']]
-        });
-        res.json(licenses);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-export const issue = async (req, res) => {
-    const transaction = await sequelize.transaction();
-    try {
-        const { id } = req.params;
-
-        const request = await Richiesta.findByPk(id, { 
-            include: [
-                { 
-                    model: Persona, 
-                    as: 'persona', 
-                    include: [{ model: PatenteCivile, as: 'patente_civile' }] 
-                }
-            ],
-            transaction 
+            transaction
         });
 
         if (!request) throw new Error("Richiesta non trovata");
         if (request.id_stato === 'INVIATA') throw new Error("Richiesta già processata");
 
         const oldActiveLicense = await PatenteServizio.findOne({
-            where: {
-                id_persona: request.id_persona,
-                id_ente: request.id_ente,
-                id_stato: 'ATTIVA'
-            },
+            where: { id_persona: request.id_persona, id_ente: request.id_ente, id_stato: 'ATTIVA' },
             transaction
         });
 
@@ -90,30 +67,27 @@ export const issue = async (req, res) => {
         await request.update({ id_stato: 'INVIATA' }, { transaction });
 
         await transaction.commit();
-        res.status(201).json(newLicense);
+        return JSON.parse(JSON.stringify(newLicense));
     } catch (error) {
         if (transaction) await transaction.rollback();
-        res.status(500).json({ error: error.message });
+        throw error;
     }
 };
 
-export const update = async (req, res) => {
+export const update = async (id, data) => {
     const transaction = await sequelize.transaction();
     try {
-        const { id } = req.params;
-        const { id_stato } = req.body;
-
         const patente = await PatenteServizio.findByPk(id);
         if (!patente) throw new Error("Patente di servizio non trovata");
 
         await patente.update({
-            id_stato,
+            id_stato: data.id_stato,
         }, { transaction });
 
         await transaction.commit();
-        res.json({ message: `Stato aggiornato a ${id_stato} con successo`, patente });
+        return JSON.parse(JSON.stringify(patente));
     } catch (error) {
         if (transaction) await transaction.rollback();
-        res.status(500).json({ error: error.message });
+        throw error;
     }
 };
