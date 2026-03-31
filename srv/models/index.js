@@ -1,4 +1,4 @@
-import { sequelize } from '../db.js';
+import { sequelize } from '../DataBase.js';
 import { Ente } from './Ente.js';
 import { Persona } from './Persona.js';
 import { PatenteCivile } from './PatenteCivile.js';
