@@ -216,7 +216,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { apiClient } from "@/services/api";
+import Api from "@/services/Api";
 import Table from "@/components/Table.vue";
 import Modal from "@/components/Modal.vue";
 import Icon from "@/components/Icon.vue";
@@ -368,8 +368,8 @@ const loadData = async () => {
     loading.value = true;
     error.value = null;
     const [resServ, resCiv] = await Promise.all([
-      apiClient.get("/patenti-servizio"),
-      apiClient.get("/patenti-civili"),
+      Api.getPatentiServizio(),
+      Api.getPatentiCivili(),
     ]);
     patentiServizio.value = resServ;
     patentiCivile.value = resCiv;
@@ -389,7 +389,7 @@ const checkNewPerson = (event) => {
 
 const handlePersonCreated = async (newPersonId) => {
   try {
-    const res = await apiClient.get("/persone");
+    const res = await Api.getPersone();
     persone.value = res;
     civilForm.value.id_persona = newPersonId;
     showPersonModal.value = false;
@@ -418,14 +418,15 @@ const openStatusModal = (patente, tipo) => {
 
 const confirmStatusChange = async () => {
   try {
-    const endpoint =
-      activeTab.value === "servizio"
-        ? `/patenti-servizio/${statusModal.value.targetId}`
-        : `/patenti-civili/${statusModal.value.targetId}`;
+    const isServizio = activeTab.value === "servizio";
+    const id = statusModal.value.targetId;
+    const data = { id_stato: statusModal.value.newState };
 
-    await apiClient.patch(endpoint, {
-      id_stato: statusModal.value.newState,
-    });
+    if (isServizio) {
+      await Api.updatePatenteServizio(id, data);
+    } else {
+      await Api.updatePatenteCivile(id, data.id_stato);
+    }
 
     showToast("Stato aggiornato con successo");
     statusModal.value.show = false;
@@ -439,8 +440,8 @@ const openCreateCivilModal = async () => {
   try {
     loading.value = true;
     const [resPersone, resCat] = await Promise.all([
-      apiClient.get("/persone"),
-      apiClient.get("/categorie-patenti"),
+      Api.getPersone(),
+      Api.getCategorie(),
     ]);
     persone.value = resPersone;
     categorie.value = resCat;
@@ -457,13 +458,13 @@ const openCreateCivilModal = async () => {
 const saveCivilLicense = async () => {
   try {
     isSaving.value = true;
-    await apiClient.post("/patenti-civili", civilForm.value);
+    await Api.createPatenteCivile(civilForm.value);
 
     showToast("Patente civile registrata con successo!");
     showCreateModal.value = false;
     await loadData();
   } catch (err) {
-    const msg = err.response?.data?.error || "Errore durante il salvataggio";
+    const msg = err.message || "Errore durante il salvataggio";
     showToast(msg, "error");
   } finally {
     isSaving.value = false;
