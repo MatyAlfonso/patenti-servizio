@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Server from "../srv/Server.js";
+import { checkExpiredLicenses } from '../srv/utils/checkExpiredLicenses.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -40,6 +41,9 @@ app.on("window-all-closed", () => {
 app.whenReady().then(async () => {
   try {
     await Server.start();
+
+    await checkExpiredLicenses();
+
     createWindow();
   } catch (error) {
     console.error("Error:", error);
