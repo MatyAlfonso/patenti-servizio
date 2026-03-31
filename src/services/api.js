@@ -1,39 +1,29 @@
-const BASE_URL = '/api';
+const Api = {
+    async getPersone(filter) {
+        return window.ipcRenderer.invoke('persone:get', filter);
+    },
 
-const request = async (method, endpoint, data = null, customOptions = {}) => {
-    const isFormData = data instanceof FormData;
-    const options = {
-        method,
-        headers: { ...customOptions.headers }
-    };
+    async getEnti() {
+        return window.ipcRenderer.invoke('enti:get');
+    },
 
-    if (data) {
-        options.body = isFormData ? data : JSON.stringify(data);
-        if (!isFormData) {
-            options.headers['Content-Type'] = 'application/json';
-        }
+    async createEnte(data) {
+        return window.ipcRenderer.invoke('enti:create', data);
+    },
+
+    async updateEnte(id, data) {
+        return window.ipcRenderer.invoke('enti:update', { id, data });
+    },
+
+    async deleteEnte(id) {
+        return window.ipcRenderer.invoke('enti:delete', id);
+    },
+
+    async get(channel, data) {
+        return window.ipcRenderer.invoke(channel, data);
     }
-
-    const response = await fetch(`${BASE_URL}${endpoint}`, options);
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `Error in ${method} request`);
-    }
-
-    const contentType = response.headers.get('content-type');
-    
-    if (contentType && contentType.includes('application/pdf') || customOptions.responseType === 'blob') {
-        return response.blob(); 
-    }
-
-    return response.json();
 };
 
-export const apiClient = {
-    get: (endpoint, options = {}) => request('GET', endpoint, null, options),
-    post: (endpoint, data) => request('POST', endpoint, data),
-    patch: (endpoint, data) => request('PATCH', endpoint, data),
-    put: (endpoint, data) => request('PUT', endpoint, data),
-    delete: (endpoint) => request('DELETE', endpoint)
-};
+export const apiClient = Api;
+
+export default Api;
