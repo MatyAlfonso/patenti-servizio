@@ -106,7 +106,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { apiClient } from "@/services/api";
+import Api from "@/services/Api";
 import Table from "@/components/Table.vue";
 import Modal from "@/components/Modal.vue";
 import Icon from "@/components/Icon.vue";
@@ -157,7 +157,7 @@ const filteredEntities = computed(() => {
 const loadEntities = async () => {
   try {
     loading.value = true;
-    entities.value = await apiClient.get("/enti");
+    entities.value = await Api.getEnti();
   } catch (err) {
     error.value = "Nessun ente trovato.";
   } finally {
@@ -187,12 +187,10 @@ const saveEntity = async () => {
     };
 
     if (isEditing.value) {
-      await apiClient.patch(`/enti/${payload.id}`, {
-        descrizione: payload.descrizione,
-      });
+      await Api.updateEnte(payload.id, { descrizione: payload.descrizione });
       showToast("Ente aggiornato con successo!");
     } else {
-      await apiClient.post("/enti", payload);
+      await Api.createEnte(payload);
       showToast("Ente creato con successo!");
     }
 
@@ -217,7 +215,7 @@ const confirmDelete = (entity) => {
 const executeDelete = async (id) => {
   try {
     isSaving.value = true;
-    await apiClient.delete(`/enti/${id}`);
+    await Api.deleteEnte(id);
     showToast("Ente eliminato con successo!");
     confirmAction.value.show = false;
     await loadEntities();
