@@ -42,6 +42,48 @@ const Api = {
     async deleteEnte(id) {
         return window.ipcRenderer.invoke('enti:delete', id);
     },
+
+    // --- CATEGORIA PATENTE ---
+
+    // GET 
+    async getCategorie() {
+        return window.ipcRenderer.invoke('categorie:get');
+    },
+
+    // --- PATENTE CIVILE ---
+
+    // GET
+    async getPatentiCivili() {
+        return window.ipcRenderer.invoke('patenteCivile:get');
+    },
+
+    // CREATE
+    async createPatenteCivile(data) {
+        return window.ipcRenderer.invoke('patenteCivile:create', data);
+    },
+
+    // UPDATE
+    async updatePatenteCivile(id, id_stato) {
+        return window.ipcRenderer.invoke('patenteCivile:updateStatus', { id, id_stato });
+    },
+
+    // --- PATENTE SERVIZIO ---
+
+    // GET
+    async getPatentiServizio() {
+        return window.ipcRenderer.invoke('patenteServizio:get');
+    },
+
+    // ISSUE / CREATE FROM REQUEST
+    async issuePatenteServizio(idRichiesta) {
+        return window.ipcRenderer.invoke('patenteServizio:issue', idRichiesta);
+    },
+
+    // UPDATE
+    async updatePatenteServizio(id, data) {
+        return window.ipcRenderer.invoke('patenteServizio:update', { id, data });
+    },
+
 };
 
 export const apiClient = Api;
