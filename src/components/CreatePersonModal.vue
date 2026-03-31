@@ -56,7 +56,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { apiClient } from "@/services/api";
+import Api from "@/services/Api";
 import Modal from "@/components/Modal.vue";
 import Toast from "@/components/Toast.vue";
 
@@ -84,16 +84,18 @@ const showToast = (msg, type = "error") => {
 const submitNewPerson = async () => {
   try {
     loading.value = true;
-    const response = await apiClient.post("/persone", personForm.value);
+    const rawData = { ...personForm.value };
+    const response = await Api.createPersona(rawData);
 
-    const newId = response.id || (response.data && response.data.id);
+    const newId = response.id;
 
     if (newId) {
       emit("person-created", newId);
+      emit("update:modelValue", false);
     } else {
       console.error("ID non trovato nella risposta:", response);
+      showToast("Errore: ID non ricevuto dal server");
     }
-    emit("update:modelValue", false);
 
     personForm.value = {
       cognome: "",
