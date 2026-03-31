@@ -458,12 +458,16 @@ const openCreateCivilModal = async () => {
 const saveCivilLicense = async () => {
   try {
     isSaving.value = true;
-    await Api.createPatenteCivile(civilForm.value);
+
+    const payload = JSON.parse(JSON.stringify(civilForm.value));
+
+    await Api.createPatenteCivile(payload);
 
     showToast("Patente civile registrata con successo!");
     showCreateModal.value = false;
     await loadData();
   } catch (err) {
+    console.error("Error:", err);
     const msg = err.message || "Errore durante il salvataggio";
     showToast(msg, "error");
   } finally {
