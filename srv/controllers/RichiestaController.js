@@ -1,33 +1,31 @@
 import fs from 'fs';
+import path from 'path';
+import { app } from 'electron';
 import { Richiesta, Persona, Ente, StatoRichiesta, TipoRichiesta, Allegato, PatenteCivile, PatenteServizio, sequelize } from '../models/index.js';
 import { generateLicenseBuffer } from '../services/pdfGenerator.js';
 
-export const getAll = async (req, res) => {
-    try {
-        const requests = await Richiesta.findAll({
-            include: [
-                { model: Persona, as: 'persona', include: [{ model: PatenteCivile, as: 'patente_civile' }] },
-                { model: Ente, as: 'ente' },
-                { model: StatoRichiesta, as: 'stato' },
-                { model: TipoRichiesta, as: 'tipo' },
-                { model: Allegato, as: 'fototessera' },
-                { model: Allegato, as: 'firma_scansionata' }
-            ],
-            order: [['createdAt', 'DESC']]
-        });
-        res.json(requests);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+export const getAll = async () => {
+    return await Richiesta.findAll({
+        include: [
+            { model: Persona, as: 'persona', include: [{ model: PatenteCivile, as: 'patente_civile' }] },
+            { model: Ente, as: 'ente' },
+            { model: StatoRichiesta, as: 'stato' },
+            { model: TipoRichiesta, as: 'tipo' },
+            { model: Allegato, as: 'fototessera' },
+            { model: Allegato, as: 'firma_scansionata' }
+        ],
+        order: [['createdAt', 'DESC']]
+    });
 };
 
-export const create = async (req, res) => {
+export const create = async (data, files) => {
     const transaction = await sequelize.transaction();
     try {
         const {
             id_persona, id_ente, id_tipo, id_stato, residenza_persona, note_richiedente,
-            patente_civile_numero, patente_civile_categorie, patente_civile_autorita, patente_civile_rilascio, patente_civile_scadenza
-        } = req.body;
+            patente_civile_numero, patente_civile_categorie, patente_civile_autorita,
+            patente_civile_rilascio, patente_civile_scadenza
+        } = data;
 
         const existingRequest = await Richiesta.findOne({
             where: {
@@ -36,27 +34,15 @@ export const create = async (req, res) => {
             },
             transaction
         });
-
-        if (existingRequest) {
-            await transaction.rollback();
-            return res.status(400).json({
-                error: "Esiste già una richiesta in corso per questa persona."
-            });
-        }
+        if (existingRequest) throw new Error("Esiste già una richiesta in corso per questa persona.");
 
         const currentActiveLicense = await PatenteCivile.findOne({
             where: { id_persona, id_stato: 'ATTIVA' },
             transaction
         });
 
-        if (id_tipo === 'NUOVA' && currentActiveLicense) {
-            await transaction.rollback();
-            return res.status(400).json({ error: "La persona ha già una patente attiva. Usa 'Rinnovo'." });
-        }
-        if (id_tipo === 'RINNOVO' && !currentActiveLicense) {
-            await transaction.rollback();
-            return res.status(400).json({ error: "Impossibile rinnovare: nessuna patente attiva trovata." });
-        }
+        if (id_tipo === 'NUOVA' && currentActiveLicense) throw new Error("La persona ha già una patente attiva. Usa 'Rinnovo'.");
+        if (id_tipo === 'RINNOVO' && !currentActiveLicense) throw new Error("Impossibile rinnovare: nessuna patente attiva trovata.");
 
         if (id_tipo === 'RINNOVO' && currentActiveLicense) {
             await currentActiveLicense.update({ id_stato: 'SCADUTA' }, { transaction });
@@ -78,22 +64,35 @@ export const create = async (req, res) => {
         const newSequence = (entity.sq_richieste || 0) + 1;
         await entity.update({ sq_richieste: newSequence }, { transaction });
 
+        const uploadDir = path.join(app.getPath('userData'), 'uploads');
+        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
         let photoId = null;
         let signatureId = null;
 
-        if (req.files?.fototessera) {
+        if (files?.fototessera?.data) {
+            const fileName = `foto_${Date.now()}_${files.fototessera.name}`;
+            const filePath = path.join(uploadDir, fileName);
+
+            fs.writeFileSync(filePath, files.fototessera.data);
+
             const photo = await Allegato.create({
-                nome_file: req.files.fototessera[0].originalname,
-                path: req.files.fototessera[0].path,
+                nome_file: files.fototessera.name,
+                path: filePath,
                 data_inserimento: new Date()
             }, { transaction });
             photoId = photo.id;
         }
 
-        if (req.files?.firma) {
+        if (files?.firma?.data) {
+            const fileName = `firma_${Date.now()}_${files.firma.name}`;
+            const filePath = path.join(uploadDir, fileName);
+
+            fs.writeFileSync(filePath, files.firma.data);
+
             const signature = await Allegato.create({
-                nome_file: req.files.firma[0].originalname,
-                path: req.files.firma[0].path,
+                nome_file: files.firma.name,
+                path: filePath,
                 data_inserimento: new Date()
             }, { transaction });
             signatureId = signature.id;
@@ -113,27 +112,25 @@ export const create = async (req, res) => {
         }, { transaction });
 
         await transaction.commit();
-        res.status(201).json(newRequest);
+        return JSON.parse(JSON.stringify(newRequest));
+
     } catch (error) {
         if (transaction) await transaction.rollback();
-        res.status(500).json({ error: error.message });
+        console.error("Controller Error:", error);
+        throw error;
     }
 };
 
-export const update = async (req, res) => {
+export const update = async (id, data, files) => {
     const transaction = await sequelize.transaction();
     try {
-        const { id } = req.params;
-        const data = req.body;
-
         const request = await Richiesta.findByPk(id, {
             include: ['fototessera', 'firma_scansionata'],
             transaction
         });
 
         if (!request) {
-            await transaction.rollback();
-            return res.status(404).json({ error: "Richiesta non trovata" });
+            throw new Error("Richiesta non trovata");
         }
 
         if (data.id_tipo && data.id_tipo !== request.id_tipo) {
@@ -142,8 +139,7 @@ export const update = async (req, res) => {
                 transaction
             });
             if (data.id_tipo === 'NUOVA' && activeLicense) {
-                await transaction.rollback();
-                return res.status(400).json({ error: "Non puoi cambiare in 'Nuova': esiste già una patente attiva." });
+                throw new Error("Non puoi cambiare in 'Nuova': esiste già una patente attiva.");
             }
         }
 
@@ -155,24 +151,33 @@ export const update = async (req, res) => {
             note_richiedente: data.note_richiedente || request.note_richiedente
         }, { transaction });
 
-        if (req.files?.fototessera) {
-            const file = req.files.fototessera[0];
-            const newPhoto = await Allegato.create({
-                nome_file: file.originalname,
-                path: file.path,
+        const uploadDir = path.join(app.getPath('userData'), 'uploads');
+        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+        if (files?.fototessera?.data) {
+            const fileName = `foto_${Date.now()}_${files.fototessera.name}`;
+            const filePath = path.join(uploadDir, fileName);
+            fs.writeFileSync(filePath, files.fototessera.data);
+
+            const f = await Allegato.create({
+                nome_file: files.fototessera.name,
+                path: filePath,
                 data_inserimento: new Date()
             }, { transaction });
-            await request.update({ id_foto: newPhoto.id }, { transaction });
+            await request.update({ id_foto: f.id }, { transaction });
         }
 
-        if (req.files?.firma) {
-            const file = req.files.firma[0];
-            const newSignature = await Allegato.create({
-                nome_file: file.originalname,
-                path: file.path,
+        if (files?.firma?.data) {
+            const fileName = `firma_${Date.now()}_${files.firma.name}`;
+            const filePath = path.join(uploadDir, fileName);
+            fs.writeFileSync(filePath, files.firma.data);
+
+            const s = await Allegato.create({
+                nome_file: files.firma.name,
+                path: filePath,
                 data_inserimento: new Date()
             }, { transaction });
-            await request.update({ id_firma: newSignature.id }, { transaction });
+            await request.update({ id_firma: s.id }, { transaction });
         }
 
         if (data.patente_civile_numero) {
@@ -196,68 +201,46 @@ export const update = async (req, res) => {
         }
 
         await transaction.commit();
-        res.json({ message: "Richiesta aggiornata correttamente" });
+        await request.reload({ include: ['fototessera', 'firma_scansionata', 'persona'] });
+        return JSON.parse(JSON.stringify(request));
     } catch (error) {
         if (transaction) await transaction.rollback();
-        console.error("Error in update:", error);
-        res.status(500).json({ error: error.message });
+        console.error("Update Error:", error);
+        throw error;
     }
 };
 
-export const generatePDF = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const request = await Richiesta.findByPk(id);
+export const generatePDF = async (id) => {
+    const request = await Richiesta.findByPk(id);
+    if (!request) throw new Error("Richiesta non trovata");
 
-        if (!request) return res.status(404).json({ error: "Richiesta non trovata" });
-
-        const serviceLicense = await PatenteServizio.findOne({
-            where: {
-                id_persona: request.id_persona,
-                id_ente: request.id_ente,
-                id_foto: request.id_foto,
-                id_firma: request.id_firma,
-                id_stato: 'ATTIVA'
+    const serviceLicense = await PatenteServizio.findOne({
+        where: {
+            id_persona: request.id_persona,
+            id_ente: request.id_ente,
+            id_foto: request.id_foto,
+            id_firma: request.id_firma,
+            id_stato: 'ATTIVA'
+        },
+        include: [
+            {
+                model: Persona,
+                as: 'persona',
+                include: [{ model: PatenteCivile, as: 'patente_civile' }]
             },
-            include: [
-                {
-                    model: Persona,
-                    as: 'persona',
-                    include: [{ model: PatenteCivile, as: 'patente_civile' }]
-                },
-                { model: Allegato, as: 'fototessera' },
-                { model: Allegato, as: 'firma_scansionata' }
-            ]
-        });
+            { model: Allegato, as: 'fototessera' },
+            { model: Allegato, as: 'firma_scansionata' }
+        ]
+    });
 
-        if (!serviceLicense) return res.status(404).json({ error: "Patente non emessa per questa richiesta" });
+    if (!serviceLicense) throw new Error("Patente non emessa per questa richiesta");
 
-        const buffer = await generateLicenseBuffer(serviceLicense);
-
-        res.setHeader('Content-Type', 'application/pdf');
-        res.send(buffer);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    return await generateLicenseBuffer(serviceLicense);
 };
 
-export const remove = async (req, res) => {
-    const transaction = await sequelize.transaction();
-    try {
-        const { id } = req.params;
-
-        const request = await Richiesta.findByPk(id, { transaction });
-        if (!request) {
-            await transaction.rollback();
-            return res.status(404).json({ error: "Richiesta non trovata" });
-        }
-
-        await request.destroy({ transaction });
-
-        await transaction.commit();
-        res.json({ message: "Richiesta eliminata correttamente" });
-    } catch (error) {
-        if (transaction) await transaction.rollback();
-        res.status(500).json({ error: error.message });
-    }
+export const remove = async (id) => {
+    const request = await Richiesta.findByPk(id);
+    if (!request) throw new Error("Richiesta non trovata");
+    await request.destroy();
+    return { success: true };
 };
