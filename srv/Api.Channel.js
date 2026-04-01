@@ -27,7 +27,8 @@ export const Channels = {
 				const result = await Persona.create(data);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error("Errore durante la creazione: " + err.message);
+				return { error: err.message };
+
 			}
 		});
 
@@ -37,7 +38,8 @@ export const Channels = {
 				const result = await Persona.update(id, data);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error("Errore durante l'aggiornamento.");
+				return { error: err.message };
+
 			}
 		});
 
@@ -46,7 +48,8 @@ export const Channels = {
 			try {
 				return await Persona.remove(id);
 			} catch (err) {
-				throw new Error("Impossibile eliminare la persona.");
+				return { error: err.message };
+
 			}
 		});
 
@@ -69,7 +72,8 @@ export const Channels = {
 				const result = await Ente.create(data);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error("Il codice ente esiste già.");
+				return { error: err.message };
+
 			}
 		});
 
@@ -79,7 +83,8 @@ export const Channels = {
 				const result = await Ente.update(id, data);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw err;
+				return { error: err.message };
+
 			}
 		});
 
@@ -88,7 +93,8 @@ export const Channels = {
 			try {
 				return await Ente.remove(id);
 			} catch (err) {
-				throw new Error("Impossibile eliminare l'ente: vincoli di integrità.");
+				return { error: err.message };
+
 			}
 		});
 
@@ -122,7 +128,8 @@ export const Channels = {
 				const result = await PatenteCivile.create(data);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error(err.message);
+				return { error: err.message };
+
 			}
 		});
 
@@ -132,7 +139,8 @@ export const Channels = {
 				const result = await PatenteCivile.update(id, id_stato);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error("Errore nell'aggiornamento: " + err.message);
+				return { error: err.message };
+
 			}
 		});
 
@@ -154,7 +162,8 @@ export const Channels = {
 				const result = await PatenteServizio.issue(idRichiesta);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error(err.message);
+				return { error: err.message };
+
 			}
 		});
 
@@ -164,7 +173,8 @@ export const Channels = {
 				const result = await PatenteServizio.update(id, data);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error(err.message);
+				return { error: err.message };
+
 			}
 		});
 
@@ -186,7 +196,8 @@ export const Channels = {
 				const result = await Richiesta.create(data, files);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error(err.message);
+				return { error: err.message };
+
 			}
 		});
 
@@ -196,7 +207,8 @@ export const Channels = {
 				const result = await Richiesta.update(id, data, files);
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
-				throw new Error(err.message);
+				return { error: err.message };
+
 			}
 		});
 
@@ -214,7 +226,8 @@ export const Channels = {
 			try {
 				return await Richiesta.generatePDF(id);
 			} catch (err) {
-				throw new Error(err.message);
+				return { error: err.message };
+
 			}
 		});
 

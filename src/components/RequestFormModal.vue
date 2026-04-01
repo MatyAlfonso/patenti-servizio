@@ -273,7 +273,7 @@ const submitRequest = async () => {
     emit("update:modelValue", false);
   } catch (err) {
     console.error("Error:", err);
-    emit("error", "Errore durante il salvataggio nel database.");
+    emit("error", err);
   } finally {
     isSaving.value = false;
   }
