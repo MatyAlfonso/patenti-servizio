@@ -50,11 +50,12 @@ defineEmits(["update:statusFilter", "update:sortOrder"]);
 }
 
 .filter-select {
-  padding: 8px 12px;
+  padding: 10px 12px;
   border-radius: 4px;
   border: 1px solid #ccc;
   background: white;
   outline: none;
+  font-size: 1.1rem;
 
   &:focus {
     border-color: #0067b1;

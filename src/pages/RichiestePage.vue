@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="header-section">
-      <h2>Richieste</h2>
+      <h1>Richieste</h1>
 
       <div class="toolbar">
         <SearchBar v-model="searchQuery" placeholder="Cerca per cognome, nome o CF..." />
@@ -405,6 +405,7 @@ legend {
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="header-section">
-      <h2>Anagrafica degli enti</h2>
+      <h1>Anagrafica degli enti</h1>
 
       <SearchBar v-model="searchQuery" placeholder="Cerca per codice o nome..." />
 
@@ -250,6 +250,7 @@ onMounted(loadEntities);
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
 }
 .grid-form {

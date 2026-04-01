@@ -1,7 +1,8 @@
 <template>
   <div class="page-container">
     <div class="header-section">
-      <h2>Anagrafica del personale</h2>
+      <h1>Anagrafica del personale</h1>
+      
       <SearchBar v-model="searchQuery" placeholder="Cerca per cognome, nome o CF..." />
       <button class="btn-new" @click="openCreateModal">
         <Icon name="add" size="18" /> Nuova persona
@@ -266,6 +267,7 @@ onMounted(loadPeople);
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
 }
 .grid-form {

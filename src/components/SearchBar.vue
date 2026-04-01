@@ -48,7 +48,7 @@ defineEmits(["update:modelValue"]);
   border-radius: 4px;
   outline: none;
   transition: border-color 0.2s;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .search-input:focus {

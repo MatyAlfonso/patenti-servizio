@@ -28,46 +28,56 @@
   justify-content: space-between;
   align-items: center;
   background-color: #0067b1;
-  padding: 0 2rem;
-  height: 60px;
+  padding: 0 3rem;
+  height: 90px;
   color: #fff;
-}
-
-.navbar-brand {
-  font-weight: bold;
-  font-size: 1.4rem;
-}
-
-.navbar-links {
-  display: flex;
-  list-style: none;
-  gap: 20px;
-}
-
-.navbar-links a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: opacity 0.2s;
-}
-
-.navbar-links a:hover {
-  opacity: 0.8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 
 .navbar-logo {
-  height: 50px;
+  height: 70px;
   width: auto;
   object-fit: contain;
 }
+
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 35px;
+}
+
+.navbar-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 8px 4px;
+
+  &:hover {
+    color: #ff5900;
+  }
+}
+
 .router-link-active {
-  border-bottom: 2px solid #ff5900;
-  padding-bottom: 5px;
+  border-bottom: 4px solid #ff5900;
+  font-weight: bold;
+}
+
+.item {
+  display: inline-block;
+  white-space: nowrap;
 }
 </style>

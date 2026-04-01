@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="header-section">
-      <h2>Gestione patenti</h2>
+      <h1>Patenti</h1>
 
       <div class="toolbar">
         <SearchBar v-model="searchQuery" placeholder="Cerca..." />
@@ -511,6 +511,7 @@ onMounted(loadData);
   cursor: pointer;
   border-radius: 4px 4px 0 0;
   font-weight: bold;
+  font-size: 1.1rem;
 }
 .tab-btn.active {
   background: #0067b1;
@@ -628,6 +629,7 @@ onMounted(loadData);
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
