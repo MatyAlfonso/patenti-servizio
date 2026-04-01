@@ -184,9 +184,12 @@ const openEditModal = (item) => {
 const savePerson = async () => {
   try {
     isSaving.value = true;
+
+    const rawData = JSON.parse(JSON.stringify(personForm.value));
+
     const payload = {
-      ...personForm.value,
-      codice_fiscale: personForm.value.codice_fiscale.toUpperCase().trim(),
+      ...rawData,
+      codice_fiscale: rawData.codice_fiscale.toUpperCase().trim(),
     };
 
     if (isEditing.value) {
@@ -199,7 +202,8 @@ const savePerson = async () => {
     showModal.value = false;
     await loadPeople();
   } catch (err) {
-    showToast(err.response?.data?.error || "Errore al salvare", "error");
+    showToast(err.message || "Errore al salvare", "error");
+    console.error("Error:", err);
   } finally {
     isSaving.value = false;
   }

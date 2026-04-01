@@ -64,7 +64,7 @@ const Api = {
 
     // UPDATE
     async updatePatenteCivile(id, id_stato) {
-        return window.ipcRenderer.invoke('patenteCivile:updateStatus', { id, id_stato });
+        return window.ipcRenderer.invoke('patenteCivile:update', { id, id_stato });
     },
 
     // --- PATENTE SERVIZIO ---
