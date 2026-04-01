@@ -254,6 +254,10 @@ onMounted(loadPeople);
 </script>
 
 <style scoped>
+button {
+  font-size: 1.1rem;
+} 
+
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -267,7 +271,6 @@ onMounted(loadPeople);
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
-  font-size: 1.1rem;
   cursor: pointer;
 }
 .grid-form {
@@ -282,13 +285,14 @@ onMounted(loadPeople);
 }
 .form-group label {
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #555;
 }
 .form-group input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1.1rem;
 }
 .form-actions {
   display: flex;

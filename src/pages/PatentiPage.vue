@@ -484,6 +484,10 @@ onMounted(loadData);
 </script>
 
 <style scoped>
+button {
+  font-size: 1.1rem;
+} 
+
 .toolbar {
   display: flex;
   align-items: center;
@@ -562,7 +566,7 @@ onMounted(loadData);
 .badge {
   padding: 4px 8px;
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -603,7 +607,7 @@ onMounted(loadData);
 }
 .form-group label {
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #555;
 }
 .form-group input,
@@ -613,6 +617,7 @@ onMounted(loadData);
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: inherit;
+  font-size: 1.1rem;
 }
 
 .form-actions {

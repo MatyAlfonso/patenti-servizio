@@ -42,7 +42,7 @@ defineEmits(["close"]);
 .modal-wrapper {
   background: white;
   width: 100%;
-  max-width: 650px;
+  max-width: 800px;
   border-radius: 8px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   overflow: hidden;
@@ -60,6 +60,7 @@ defineEmits(["close"]);
 .modal-header h3 {
   margin: 0;
   color: #0067b1;
+  font-size: 1.4em;
 }
 
 .close-btn {

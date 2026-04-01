@@ -392,6 +392,10 @@ legend {
   padding: 0 10px;
 }
 
+button {
+  font-size: 1.1rem;
+}
+
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -405,7 +409,6 @@ legend {
   padding: 10px 20px;
   border-radius: 4px;
   font-weight: bold;
-  font-size: 1.1rem;
   cursor: pointer;
 }
 
@@ -480,7 +483,7 @@ legend {
 .badge {
   padding: 4px 8px;
   border-radius: 12px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
 }

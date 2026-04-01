@@ -375,6 +375,10 @@ watch(selectedPerson, (newPerson) => {
 </script>
 
 <style scoped>
+button {
+  font-size: 1.1rem;
+} 
+
 .grid-form {
   display: flex;
   flex-direction: column;
@@ -401,7 +405,7 @@ watch(selectedPerson, (newPerson) => {
   justify-content: space-between;
   gap: 5px;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #555;
   margin-bottom: 10px;
   align-items: center;
@@ -410,6 +414,7 @@ watch(selectedPerson, (newPerson) => {
 .form-group-row select {
   flex: 1;
   min-width: 0;
+  font-size: 1.1rem;
 }
 .form-group-row label {
   white-space: nowrap;
@@ -419,7 +424,7 @@ watch(selectedPerson, (newPerson) => {
 }
 .form-group label {
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #555;
 }
 .form-group input,
@@ -429,6 +434,7 @@ watch(selectedPerson, (newPerson) => {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: inherit;
+  font-size: 1.1rem;
 }
 
 .fileInput {
@@ -503,7 +509,7 @@ watch(selectedPerson, (newPerson) => {
 }
 
 .autocomplete {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: #28a745;
   margin-left: 10px;
 }

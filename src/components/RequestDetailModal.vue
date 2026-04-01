@@ -101,6 +101,10 @@ defineEmits(["update:modelValue", "approve", "reject"]);
 </script>
 
 <style scoped>
+button {
+  font-size: 1.1rem;
+} 
+
 .detail-container {
   display: flex;
   flex-direction: column;
@@ -151,13 +155,13 @@ defineEmits(["update:modelValue", "approve", "reject"]);
 
 .detail-info h3 {
   margin: 0 0 10px 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #0067b1;
 }
 
 .detail-info p {
   margin: 5px 0;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .form-actions {
@@ -208,7 +212,7 @@ defineEmits(["update:modelValue", "approve", "reject"]);
   background: #fff3cd;
   color: #856404;
 }
-.badge.ATTIVA {
+.badge.ATTIVA, .badge.INVIATA {
   background: #d4edda;
   color: #155724;
 }

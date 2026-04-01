@@ -112,6 +112,10 @@ const showToast = (msg, type = "error") => {
 </script>
 
 <style scoped>
+button {
+  font-size: 1.1rem;
+} 
+
 .grid-form {
   display: flex;
   flex-direction: column;
@@ -125,10 +129,11 @@ const showToast = (msg, type = "error") => {
 }
 .form-group label {
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #555;
 }
 .form-group input {
+  font-size: 1.1rem;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
