@@ -202,8 +202,8 @@ const savePerson = async () => {
     showModal.value = false;
     await loadPeople();
   } catch (err) {
-    showToast(err.message || "Errore al salvare", "error");
-    console.error("Error:", err);
+    showToast(err, "error");
+    console.error(err);
   } finally {
     isSaving.value = false;
   }
@@ -238,7 +238,7 @@ const executeDelete = async (id) => {
     confirmAction.value.show = false;
     await loadPeople();
   } catch (err) {
-    showToast("Errore nell'eliminazione", "error");
+    showToast(err, "error");
   } finally {
     isSaving.value = false;
   }

@@ -74,12 +74,6 @@ const personForm = ref({
   luogo_nascita: "",
 });
 
-const showToast = (msg, type = "error") => {
-  toast.value = { show: true, message: msg, type };
-  setTimeout(() => {
-    toast.value.show = false;
-  }, 3000);
-};
 
 const submitNewPerson = async () => {
   try {
@@ -107,6 +101,13 @@ const submitNewPerson = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const showToast = (msg, type = "error") => {
+  toast.value = { show: true, message: msg, type };
+  setTimeout(() => {
+    toast.value.show = false;
+  }, 3000);
 };
 </script>
 
