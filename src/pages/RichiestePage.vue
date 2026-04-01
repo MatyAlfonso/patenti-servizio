@@ -304,7 +304,7 @@ const printLicense = async (item) => {
     }
     await loadData();
   } catch (err) {
-    showToast("Errore durante la generazione", "error");
+    showToast(err, "error");
   }
 };
 
@@ -328,7 +328,7 @@ const executeReject = async (id) => {
     await loadData();
   } catch (err) {
     console.error(err);
-    showToast("Errore durante la modifica dello stato", "error");
+    showToast(err, "error");
   } finally {
     isSaving.value = false;
   }

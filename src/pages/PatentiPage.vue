@@ -468,8 +468,7 @@ const saveCivilLicense = async () => {
     await loadData();
   } catch (err) {
     console.error("Error:", err);
-    const msg = err.message || "Errore durante il salvataggio";
-    showToast(msg, "error");
+    showToast(err, "error");
   } finally {
     isSaving.value = false;
   }

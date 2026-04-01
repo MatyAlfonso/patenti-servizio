@@ -220,8 +220,7 @@ const executeDelete = async (id) => {
     confirmAction.value.show = false;
     await loadEntities();
   } catch (err) {
-    const msg = err.response?.data?.error || "Errore durante l'eliminazione";
-    showToast(msg, "error");
+    showToast(err, "error");
   } finally {
     isSaving.value = false;
   }

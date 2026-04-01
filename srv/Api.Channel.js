@@ -217,7 +217,8 @@ export const Channels = {
 			try {
 				return await Richiesta.remove(id);
 			} catch (err) {
-				throw new Error("Errore durante l'eliminazione.");
+				return { error: err.message };
+
 			}
 		});
 
