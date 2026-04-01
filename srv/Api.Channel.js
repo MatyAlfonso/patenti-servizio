@@ -4,6 +4,8 @@ import * as Ente from './controllers/EnteController.js';
 import * as PatenteCivile from './controllers/PatenteCivileController.js';
 import * as PatenteServizio from './controllers/PatenteServizioController.js';
 import * as Categoria from './controllers/CategoriaPatenteController.js';
+import * as Richiesta from './controllers/RichiestaController.js';
+import * as TipoRichiesta from './controllers/TipoRichiestaController.js';
 
 export const Channels = {
 	init: function () {
@@ -163,6 +165,68 @@ export const Channels = {
 				return JSON.parse(JSON.stringify(result));
 			} catch (err) {
 				throw new Error(err.message);
+			}
+		});
+
+		// --- RICHIESTE ---
+
+		// GET
+		ipcMain.handle('richieste:get', async () => {
+			try {
+				const result = await Richiesta.getAll();
+				return JSON.parse(JSON.stringify(result));
+			} catch (err) {
+				return { error: err.message };
+			}
+		});
+
+		// CREATE
+		ipcMain.handle('richieste:create', async (_, { data, files }) => {
+			try {
+				const result = await Richiesta.create(data, files);
+				return JSON.parse(JSON.stringify(result));
+			} catch (err) {
+				throw new Error(err.message);
+			}
+		});
+
+		// UPDATE 
+		ipcMain.handle('richieste:update', async (_, { id, data, files }) => {
+			try {
+				const result = await Richiesta.update(id, data, files);
+				return JSON.parse(JSON.stringify(result));
+			} catch (err) {
+				throw new Error(err.message);
+			}
+		});
+
+		// DELETE
+		ipcMain.handle('richieste:delete', async (_, id) => {
+			try {
+				return await Richiesta.remove(id);
+			} catch (err) {
+				throw new Error("Errore durante l'eliminazione.");
+			}
+		});
+
+		// GENERATE PDF
+		ipcMain.handle('richieste:generatePDF', async (_, id) => {
+			try {
+				return await Richiesta.generatePDF(id);
+			} catch (err) {
+				throw new Error(err.message);
+			}
+		});
+
+		// --- TIPO RICHIESTA ---
+
+		//GET
+		ipcMain.handle('tipiRichiesta:get', async () => {
+			try {
+				const result = await TipoRichiesta.getAll();
+				return JSON.parse(JSON.stringify(result));
+			} catch (err) {
+				return { error: err.message };
 			}
 		});
 	}
