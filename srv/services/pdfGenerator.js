@@ -7,8 +7,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const fonts = {
     Roboto: {
-        normal: path.resolve(__dirname, '../assets/fonts/Roboto-Regular.ttf'),
-        bold: path.resolve(__dirname, '../assets/fonts/Roboto-Bold.ttf'),
+        normal: path.resolve(__dirname, '../srv/assets/fonts/Roboto-Regular.ttf'),
+        bold: path.resolve(__dirname, '../srv/assets/fonts/Roboto-Bold.ttf'),
     }
 };
 
@@ -76,8 +76,8 @@ export const generateLicenseBuffer = async (request) => {
     const coords10 = backBoxes[`${request.id_categoria}_10`];
     const coords11 = backBoxes[`${request.id_categoria}_11`];
 
-    const frontBackground = imgToBase64(path.join(__dirname, '../assets/templates/fronte.jpg'));
-    const backBackground = imgToBase64(path.join(__dirname, '../assets/templates/retro.jpg'));
+    const frontBackground = imgToBase64(path.join(__dirname, '../srv/assets/templates/fronte.jpg'));
+    const backBackground = imgToBase64(path.join(__dirname, '../srv/assets/templates/retro.jpg'));
 
     const holderPhoto = imgToBase64(request.fototessera?.path);
     const holderSignature = imgToBase64(request.firma_scansionata?.path);
