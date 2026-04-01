@@ -1,6 +1,6 @@
 <template>
   <div class="search-box">
-    <Icon name="search" size="18" class="search-icon" />
+    <Icon name="search" size="32" class="search-icon" />
     <input
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"

@@ -6,7 +6,7 @@
       <SearchBar v-model="searchQuery" placeholder="Cerca per codice o nome..." />
 
       <button class="btn-new" @click="openCreateModal">
-        <Icon name="add" size="18" /> Nuovo ente
+        <Icon name="add" size="32" /> Nuovo ente
       </button>
     </div>
 
@@ -83,14 +83,14 @@
             @click="openEditModal(data.item)"
             title="Modifica"
           >
-            <Icon name="edit" size="24" />
+            <Icon name="edit" size="32" />
           </button>
           <button
             class="btn-icon delete"
             @click="confirmDelete(data.item)"
             title="Elimina"
           >
-            <Icon name="delete" size="24" />
+            <Icon name="delete" size="32" />
           </button>
         </div>
       </template>

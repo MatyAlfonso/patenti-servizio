@@ -72,7 +72,7 @@
           class="btn-reject"
           @click="$emit('reject', request)"
         >
-          <Icon name="block" size="18" /> Respingi
+          <Icon name="block" size="32" /> Respingi
         </button>
 
         <button
@@ -80,7 +80,7 @@
           class="btn-save"
           @click="$emit('approve', request)"
         >
-          <Icon name="print" size="18" /> Approva e stampa
+          <Icon name="print" size="32" /> Approva e stampa
         </button>
       </div>
     </div>

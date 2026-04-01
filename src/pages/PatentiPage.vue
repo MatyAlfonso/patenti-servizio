@@ -114,7 +114,7 @@
             class="btn-new"
             @click="openCreateCivilModal"
           >
-            <Icon name="add" size="18" /> Nuova patente civile
+            <Icon name="add" size="32" /> Nuova patente civile
           </button>
         </div>
       </div>
@@ -165,7 +165,7 @@
               "
               :class="data.item.id_stato !== 'ATTIVA' ? 'not-allowed' : ''"
             >
-              <Icon name="settings" size="24" />
+              <Icon name="settings" size="32" />
             </button>
           </div>
         </template>

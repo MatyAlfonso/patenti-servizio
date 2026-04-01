@@ -4,14 +4,14 @@
       <div class="toast-content">
         <Icon
           :name="type === 'success' ? 'check_circle' : 'error'"
-          size="24"
+          size="32"
           class="toast-icon"
         />
         <p>{{ message }}</p>
       </div>
 
       <button class="close-btn" @click="$emit('close')">
-        <Icon name="close" size="20" />
+        <Icon name="close" size="32" />
       </button>
     </div>
   </Transition>

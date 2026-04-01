@@ -266,6 +266,14 @@ defineExpose({
   text-align: center;
 }
 
+th {
+  font-size: 1.2rem;
+}
+
+td {
+  font-size: 1.1rem;
+}
+
 .generic-table th {
   background-color: #f4f4f4;
   font-weight: bold;

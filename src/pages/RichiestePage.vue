@@ -14,7 +14,7 @@
       </div>
 
       <button class="btn-new" @click="openCreateModal">
-        <Icon name="add" size="18" /> Nuova richiesta
+        <Icon name="add" size="32" /> Nuova richiesta
       </button>
     </div>
 
@@ -88,7 +88,7 @@
               title="Firma"
             />
           </template>
-          <Icon v-else name="photo" color="#ccc" size="30" />
+          <Icon v-else name="photo" color="#ccc" size="40" />
         </div>
       </template>
 
@@ -99,7 +99,7 @@
             @click="viewDetails(data.item)"
             title="Dettagli"
           >
-            <Icon name="visibility" size="24" />
+            <Icon name="visibility" size="32" />
           </button>
 
           <template v-if="data.item.id_stato === 'IN_PREPARAZIONE'">
@@ -108,14 +108,14 @@
               @click="openEditModal(data.item)"
               title="Modifica"
             >
-              <Icon name="edit" size="24" />
+              <Icon name="edit" size="32" />
             </button>
             <button
               class="btn-icon delete"
               @click="confirmDelete(data.item)"
               title="Elimina"
             >
-              <Icon name="delete" size="24" />
+              <Icon name="delete" size="32" />
             </button>
           </template>
         </div>

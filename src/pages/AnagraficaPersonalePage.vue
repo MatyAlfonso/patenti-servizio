@@ -5,7 +5,7 @@
       
       <SearchBar v-model="searchQuery" placeholder="Cerca per cognome, nome o CF..." />
       <button class="btn-new" @click="openCreateModal">
-        <Icon name="add" size="18" /> Nuova persona
+        <Icon name="add" size="32" /> Nuova persona
       </button>
     </div>
 
@@ -85,14 +85,14 @@
             @click="openEditModal(data.item)"
             title="Modifica"
           >
-            <Icon name="edit" size="24" />
+            <Icon name="edit" size="32" />
           </button>
           <button
             class="btn-icon delete"
             @click="confirmDelete(data.item)"
             title="Elimina"
           >
-            <Icon name="delete" size="24" />
+            <Icon name="delete" size="32" />
           </button>
         </div>
       </template>
