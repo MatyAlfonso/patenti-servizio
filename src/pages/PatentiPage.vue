@@ -114,7 +114,7 @@
             class="btn-new"
             @click="openCreateCivilModal"
           >
-            <Icon name="add" size="32" /> Nuova patente civile
+            <Icon name="add" size="24" /> Nuova patente civile
           </button>
         </div>
       </div>

@@ -14,7 +14,7 @@
       </div>
 
       <button class="btn-new" @click="openCreateModal">
-        <Icon name="add" size="32" /> Nuova richiesta
+        <Icon name="add" size="24" /> Nuova richiesta
       </button>
     </div>
 

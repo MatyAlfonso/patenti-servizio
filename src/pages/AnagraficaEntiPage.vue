@@ -6,7 +6,7 @@
       <SearchBar v-model="searchQuery" placeholder="Cerca per codice o nome..." />
 
       <button class="btn-new" @click="openCreateModal">
-        <Icon name="add" size="32" /> Nuovo ente
+        <Icon name="add" size="24" /> Nuovo ente
       </button>
     </div>
 

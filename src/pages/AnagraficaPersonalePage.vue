@@ -5,7 +5,7 @@
       
       <SearchBar v-model="searchQuery" placeholder="Cerca per cognome, nome o CF..." />
       <button class="btn-new" @click="openCreateModal">
-        <Icon name="add" size="32" /> Nuova persona
+        <Icon name="add" size="24" /> Nuova persona
       </button>
     </div>
 
