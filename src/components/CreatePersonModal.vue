@@ -92,9 +92,6 @@ const submitNewPerson = async () => {
     if (newId) {
       emit("person-created", newId);
       emit("update:modelValue", false);
-    } else {
-      console.error("ID non trovato nella risposta:", response);
-      showToast("Errore: ID non ricevuto dal server");
     }
 
     personForm.value = {
@@ -105,12 +102,8 @@ const submitNewPerson = async () => {
       luogo_nascita: "",
     };
   } catch (err) {
-    const msg =
-      err.message === "Validation error"
-        ? "Errore: Persona già esistente o dati non validi"
-        : err.message || "Errore nella creazione della persona";
 
-    showToast(msg, "error");
+    showToast(err, "error");
   } finally {
     loading.value = false;
   }

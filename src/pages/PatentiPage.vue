@@ -393,8 +393,9 @@ const handlePersonCreated = async (newPersonId) => {
     persone.value = res;
     civilForm.value.id_persona = newPersonId;
     showPersonModal.value = false;
+    showToast("Persona creata con successo", "success");
   } catch (err) {
-    showToast("Errore nel caricamento delle persone", "error");
+    showToast(err, "error");
   }
 };
 
@@ -431,8 +432,8 @@ const confirmStatusChange = async () => {
     showToast("Stato aggiornato con successo");
     statusModal.value.show = false;
     await loadData();
-  } catch (e) {
-    showToast(e.message, "error");
+  } catch (err) {
+    showToast(err, "error");
   }
 };
 
@@ -449,7 +450,7 @@ const openCreateCivilModal = async () => {
     civilForm.value = { ...initialCivilState };
     showCreateModal.value = true;
   } catch (err) {
-    showToast("Errore nel caricamento dei dati.", "error");
+    showToast(err, "error");
   } finally {
     loading.value = false;
   }
