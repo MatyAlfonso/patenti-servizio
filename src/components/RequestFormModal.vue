@@ -180,8 +180,8 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import { apiClient } from "@/services/api";
-import { formatDate } from "@/utils/formatters";
+import Api from "@/services/api";
+import { formatDate, getFileUrl } from "@/utils/formatters";
 import Modal from "@/components/Modal.vue";
 import CreatePersonModal from "./CreatePersonModal.vue";
 
@@ -255,37 +255,41 @@ const handlePersonCreated = async (newPersonId) => {
 const submitRequest = async () => {
   try {
     isSaving.value = true;
-    const formData = new FormData();
 
-    Object.keys(form.value).forEach((key) => {
-      if (form.value[key] !== null) formData.append(key, form.value[key]);
-    });
+    const dataPayload = { ...form.value };
 
-    if (files.foto) formData.append("fototessera", files.foto);
-    if (files.firma) formData.append("firma", files.firma);
+    const filesPayload = {
+      fototessera: files.foto,
+      firma: files.firma,
+    };
 
     if (isEditing.value) {
-      await apiClient.patch(`/richieste/${form.value.id}`, formData);
+      await Api.updateRichiesta(form.value.id, dataPayload, filesPayload);
     } else {
-      await apiClient.post("/richieste", formData);
+      await Api.createRichiesta(dataPayload, filesPayload);
     }
 
     emit("saved");
     emit("update:modelValue", false);
   } catch (err) {
-    const errorMessage =
-      err.response?.data?.error || err.message || "Errore durante il salvataggio";
-    emit("error", errorMessage);
+    console.error("Error:", err);
+    emit("error", "Errore durante il salvataggio nel database.");
   } finally {
     isSaving.value = false;
   }
 };
 
-const handleFile = (e, type) => {
+const handleFile = async (e, type) => {
   const file = e.target.files[0];
   if (file) {
-    files[type] = file;
     previews.value[type] = URL.createObjectURL(file);
+
+    const arrayBuffer = await file.arrayBuffer();
+    files[type] = {
+      data: new Uint8Array(arrayBuffer),
+      name: file.name,
+      type: file.type,
+    };
   }
 };
 
@@ -331,9 +335,9 @@ watch(
             ?.data_scadenza || "",
       };
 
-      previews.value.foto = r.fototessera?.path ? `api/${r.fototessera.path}` : null;
+      previews.value.foto = r.fototessera?.path ? getFileUrl(r.fototessera.path) : null;
       previews.value.firma = r.firma_scansionata?.path
-        ? `api/${r.firma_scansionata.path}`
+        ? getFileUrl(r.firma_scansionata.path)
         : null;
     } else {
       resetForm();

@@ -81,13 +81,9 @@
       <template #cell[foto]="{ data }">
         <div class="images-container">
           <template v-if="data.item.fototessera">
+            <img :src="getFileUrl(data.item.fototessera.path)" class="thumbnail" title="Foto" />
             <img
-              :src="`api/${data.item.fototessera.path}`"
-              class="thumbnail"
-              title="Foto"
-            />
-            <img
-              :src="`api/${data.item.firma_scansionata?.path}`"
+              :src="getFileUrl(data.item.firma_scansionata.path)"
               class="thumbnail"
               title="Firma"
             />
@@ -137,7 +133,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { apiClient } from "@/services/api";
+import Api from "@/services/api";
 import Table from "@/components/Table.vue";
 import Modal from "@/components/Modal.vue";
 import Toast from "@/components/Toast.vue";
@@ -147,7 +143,7 @@ import Filter from "@/components/Filter.vue";
 import RequestFormModal from "@/components/RequestFormModal.vue";
 import RequestDetailModal from "@/components/RequestDetailModal.vue";
 import Loading from "@/components/LoadingSpinner.vue";
-import { formatDate } from "@/utils/formatters";
+import { formatDate, getFileUrl } from "@/utils/formatters";
 
 const showModal = ref(false);
 const showDetailModal = ref(false);
@@ -256,19 +252,21 @@ const loadData = async () => {
       resCategories,
       resTypes,
     ] = await Promise.all([
-      apiClient.get("/richieste"),
-      apiClient.get("/persone"),
-      apiClient.get("/enti"),
-      apiClient.get("/categorie-patenti"),
-      apiClient.get("/tipi-richieste"),
+      Api.getRichieste(),
+      Api.getPersone(),
+      Api.getEnti(),
+      Api.getCategorie(),
+      Api.getTipiRichiesta(),
     ]);
+
     richieste.value = resRichieste;
     people.value = resPeople;
     entities.value = resEntities;
     categories.value = resCategories;
     requestTypes.value = resTypes;
   } catch (err) {
-    error.value = "Errore nel caricamento dati.";
+    console.error(err);
+    error.value = "Errore nel caricamento dati dal database locale.";
   } finally {
     loading.value = false;
   }
@@ -290,19 +288,11 @@ const handleSaved = async () => {
 
 const printLicense = async (item) => {
   showDetailModal.value = false;
-  let url = null;
   try {
-    await apiClient.post(`/richieste/${item.id}`);
-
+    await Api.issuePatenteServizio(item.id);
     showToast("Richiesta approvata. Generazione PDF...");
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const response = await apiClient.get(`/richieste/${item.id}/pdf`, {
-      responseType: "blob",
-    });
-
-    const blob = new Blob([response], { type: "application/pdf" });
+    const blob = await Api.generatePDF(item.id);
     const url = window.URL.createObjectURL(blob);
 
     const printWindow = window.open(url);
@@ -311,22 +301,10 @@ const printLicense = async (item) => {
         printWindow.focus();
         printWindow.print();
       };
-    } else {
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `Patente_${item.cognome}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
     }
-
     await loadData();
   } catch (err) {
-    if (url) window.URL.revokeObjectURL(url);
-    console.error("Errore durante il proceso:", err);
-    const msg =
-      err.response?.data?.error || "Errore durante la generazione del documento";
-    showToast(msg, "error");
+    showToast("Errore durante la generazione", "error");
   }
 };
 
@@ -341,13 +319,18 @@ const confirmReject = (item) => {
 
 const executeReject = async (id) => {
   try {
-    await apiClient.patch(`/richieste/${id}`, { id_stato: "RESPINTA" });
+    isSaving.value = true;
+    await Api.updateRichiesta(id, { id_stato: "RESPINTA" }, null);
+
     showToast("Richiesta respinta");
     showDetailModal.value = false;
     confirmAction.value.show = false;
     await loadData();
   } catch (err) {
-    showToast("Errore", "error");
+    console.error(err);
+    showToast("Errore durante la modifica dello stato", "error");
+  } finally {
+    isSaving.value = false;
   }
 };
 
@@ -363,11 +346,13 @@ const confirmDelete = (item) => {
 const executeDelete = async (id) => {
   try {
     isSaving.value = true;
-    await apiClient.delete(`/richieste/${id}`);
+    await Api.deleteRichiesta(id);
+
     showToast("Richiesta eliminata");
     await loadData();
     confirmAction.value.show = false;
   } catch (err) {
+    console.error(err);
     showToast("Errore nell'eliminazione", "error");
   } finally {
     isSaving.value = false;

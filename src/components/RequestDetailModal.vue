@@ -9,12 +9,12 @@
         <div class="detail-images">
           <div class="image-box">
             <label>Fototessera</label>
-            <img :src="`api/${request.fototessera?.path}`" class="full-img" />
+            <img :src="getFileUrl(request.fototessera?.path)" class="full-img" />
           </div>
           <div class="image-box">
             <label>Firma autografa</label>
             <img
-              :src="`api/${request.firma_scansionata?.path}`"
+              :src="getFileUrl(request.firma_scansionata?.path)"
               class="full-img signature"
             />
           </div>
@@ -90,7 +90,7 @@
 <script setup>
 import Modal from "@/components/Modal.vue";
 import Icon from "@/components/Icon.vue";
-import { formatDate } from "@/utils/formatters";
+import { formatDate, getFileUrl } from "@/utils/formatters";
 
 defineProps({
   modelValue: Boolean,
