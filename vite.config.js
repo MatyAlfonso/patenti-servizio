@@ -25,7 +25,8 @@ export default defineConfig({
                 "pg-hstore",
                 "tedious",
                 "mysql2",
-                "oracledb"
+                "oracledb",
+                "pdfmake"
               ],
             },
           },
